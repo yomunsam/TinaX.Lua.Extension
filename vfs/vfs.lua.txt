@@ -1,5 +1,94 @@
 XCore = XCore or {}
 XCore.VFS = {}
+XCore.VFS.Type_CS_IVFS = typeof(CS.TinaX.VFSKit.IVFS);
+XCore.VFS.CS_IVFS = XCore.CSCore.Services:Get(XCore.VFS.Type_CS_IVFS);
 
+local CommonTypes = {}
+CommonTypes.GameObject = typeof(CS.UnityEngine.GameObject)
+
+------ GC -----------------------------------------
+
+--- Release Assets
+--@param asset : CS.UnityEngine.Object
+function XCore.VFS.Release(asset)
+	XCore.VFS.CS_IVFS:Release(asset);
+end
+
+function XCore.VFS.UnloadUnusedAssets()
+	XCore.VFS.CS_IVFS:UnloadUnusedAssets();
+end
+
+------ Load IAsset ----------------------------------
+
+--- Load Asset via "IAsset" (Sync)
+--@param assetPath : string
+--@param type : CS.System.Type asset type
+--@return CS.TinaX.VFSKit.IAsset loaded asset
+function XCore.VFS.LoadAsset(assetPath, type)
+	return XCore.CS_IVFS:LoadAsset(assetPath, type);
+end
+
+--- Load Asset via "IAsset" (Async callback)
+--@param assetPath : string
+--@param type : CS.System.Type asset type
+--@param callback : function param1:asset; param2:exception
+function XCore.VFS.LoadAssetAsync(assetPath, type, callback)
+	XCore.VFS.CS_IVFS:LoadAssetAsync(assetPath, type, function(asset, err)
+		if(callback ~= nil)then
+			callback(asset,err);
+		end		
+	end)
+end
+
+------ Load Asset ----------------------------------
+
+--- Load Asset (Sync)
+--@param assetPath : string
+--@param type : CS.System.Type asset type
+--@return CS.UnityEngine.Object loaded asset
+function XCore.VFS.Load(assetPath, type)
+    return XCore.CS_IVFS:Load(assetPath, type);
+end
+
+--- Load Asset (Async callback)
+--@param assetPath : string
+--@param type : CS.System.Type asset type
+--@param callback : function param1:asset; param2:exception
+function XCore.VFS.LoadAsync(assetPath, type, callback)
+    XCore.VFS.CS_IVFS:LoadAsync(assetPath, type, function(asset, err)
+		if(callback ~= nil)then
+			callback(asset,err);
+		end
+	end)
+end
+
+------ Patch ----------------------------------
+
+--- Install Patch 安装补丁
+--@param path : string patch load path
+function XCore.VFS.InstallPatch(path)
+    XCore.VFS.CS_IVFS:InstallPatch(path);
+end
+
+------ Lua 常用加载封装 -------------------------
+
+function XCore.VFS.LoadPrefab(assetPath)
+    return XCore.VFS.Load(assetPath, CommonTypes.GameObject);
+end
+
+function XCore.VFS.LoadPrefabAsset(assetPath)
+    return XCore.VFS.LoadAsset(assetPath, CommonTypes.GameObject);
+end
+
+function XCore.VFS.LoadPrefabAsync(assetPath, callback)
+    XCore.VFS.LoadAsync(assetPath, CommonTypes.GameObject, callback);
+end
+
+function XCore.VFS.LoadPrefabAssetAsync(assetPath, callback)
+    XCore.VFS.LoadAssetAsync(assetPath, CommonTypes.GameObject, callback);
+end
+
+
+------------------------------------------------------
 
 return XCore.VFS;

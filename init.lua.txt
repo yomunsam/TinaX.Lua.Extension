@@ -1,11 +1,62 @@
+--[[
+    Default table : XCore.XExtension
+]]
+TinaXLuaExtensionDefine = {
+    VFS     = "VFS",
+    UIKit   = "UIKit",
+}
+
+
 local LuaExtension = {}
 
 LuaExtension.LuaFiles = {
-    "vfs.vfs",
+    ["VFS"] = "vfs.vfs",
+    ["UIKit"] = "uikit.uikit",
 }
 
-function LuaExtension.Init()
-    
+LuaExtension.DefaultInitList = {
+    "VFS","UIKit"
+}
+
+--- 获取require列表
+-- @param t_enablePackages table 一个数组table,记录Packages定义
+-- @return string
+local function GetRequireFilePaths(t_enablePackages)
+    local result = {}
+    if(t_enablePackages ~= nil and type(t_enablePackages) == "table") then
+        --根据参数生成
+        for _ , v in ipairs(t_enablePackages) do
+            if (LuaExtension.LuaFiles[tostring(v)] ~= nil) then
+                table.insert(result, XCore.XExtension.RootPath .. "." .. LuaExtension.LuaFiles[tostring(v)]);
+            else
+                printW("[TinaX Lua Extension] Package define name \"" .. v .. "\" is invalid.");
+            end
+        end
+    else
+        result = table.clone(LuaExtension.DefaultInitList);
+    end
+    return result;
+end
+
+local function RequireAllFiles(list)
+    for _ , v in ipairs(list) do
+        require(v);
+    end
+end
+
+---Init "TinaX Lua Extension"
+-- @param s_extensionRootPath string
+-- @param t_params params
+function LuaExtension.Init(s_extensionRootPath, t_params)
+    if (s_extensionRootPath == nil or type(s_extensionRootPath) ~= "string") then
+        error("Connot initial \"TinaX Lua Extension\" : param \"s_extensionRootPath\" is invalid.");
+    end
+    XCore = XCore or {};
+    XCore.XExtension = XCore.XExtension or {}
+    XCore.XExtension.RootPath = s_extensionRootPath;
+    local requireList = GetRequireFilePaths(t_params.EnablePackages);
+    -- dump(requireList);
+    RequireAllFiles(requireList);
 end
 
 return LuaExtension;
