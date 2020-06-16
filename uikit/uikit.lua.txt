@@ -1,1 +1,85 @@
-print("ui kit 喵")
+XCore = XCore or {}
+XCore.UIKit = {}
+XCore.UIKit.Type_CS_IUIKit = typeof(CS.TinaX.UIKit.IUIKit);
+XCore.UIKit.CS_IUIKIT = XCore.CSCore.Services:Get(XCore.UIKit.Type_CS_IUIKit);
+
+local OpenUIParams = {
+    name = nil,
+    useMask = false,
+    closeByMask = false,
+    maskColor = nil,
+    root = nil,
+    behaviour = nil,
+    DI = true,              -- DependencyInjection
+}
+
+--- Open UI
+--@params: ui_param : OpenUIParams
+function XCore.UIKit.OpenUI(ui_param, ...)
+    if ui_param == nil then 
+        error("[Lua.UIKit] Open UI failed: ui_param is invalid.");
+    end
+    local ui_param_type = type(ui_param);
+    if(ui_param_type ~= "string" and ui_param_type ~= "table") then
+        error("[Lua.UIKit] Open UI failed: ui_param is invalid.");
+    end
+
+    local ui_name;
+    local open_ui_param = CS.TinaX.UIKit.OpenUIParam();
+
+    if(ui_param_type == "string") then
+        ui_name = ui_param;
+        open_ui_param.UseMask = OpenUIParams.useMask;
+        open_ui_param.CloseByMask = OpenUIParams.closeByMask;
+        open_ui_param.MaskColor = OpenUIParams.maskColor;
+        open_ui_param.UIRoot = OpenUIParams.root;
+        open_ui_param.xBehaviour = OpenUIParams.behaviour;
+        open_ui_param.DependencyInjection = OpenUIParams.DI;
+    else
+        if(ui_param.name == nil or type(ui_param.name) ~= "string") then
+            error("[Lua.UIKit]Open UI failed: Invalid UIName");
+        end
+        ui_name = ui_param.name;
+        -- useMask
+        if ui_name.useMask == nil or type(ui_name.useMask) ~= "boolean" then
+            open_ui_param.UseMask = OpenUIParams.useMask;
+        else
+            open_ui_param.UseMask = ui_name.useMask;
+        end
+        -- closeByMask
+        if ui_name.closeByMask == nil or type(ui_name.closeByMask) ~= "boolean" then
+            open_ui_param.CloseByMask = OpenUIParams.closeByMask;
+        else
+            open_ui_param.CloseByMask = ui_name.closeByMask;
+        end
+        -- maskColor
+        if ui_name.maskColor == nil then
+            open_ui_param.MaskColor = OpenUIParams.maskColor;
+        else
+            open_ui_param.MaskColor = ui_name.maskColor;
+        end
+        -- root
+        if ui_name.root == nil then
+            open_ui_param.UIRoot = OpenUIParams.root;
+        else
+            open_ui_param.UIRoot = ui_name.root;
+        end
+        -- behaviour
+        if ui_name.behaviour == nil then
+            open_ui_param.xBehaviour = OpenUIParams.behaviour;
+        else
+            open_ui_param.xBehaviour = ui_name.behaviour;
+        end
+        --DI
+        if ui_name.DI == nil or type(ui_name.closeByMask) ~= "boolean" then
+            open_ui_param.DependencyInjection = OpenUIParams.DI;
+        else
+            open_ui_param.DependencyInjection = ui_name.DI;
+        end
+    end
+
+    open_ui_param.UIName = ui_name;
+    
+    local entity = XCore.UIKit.CS_IUIKIT:OpenUIWithParam(ui_name,open_ui_param, ...);
+
+end
