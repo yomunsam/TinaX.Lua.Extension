@@ -1,0 +1,11 @@
+local LuaExtension = {}
+
+LuaExtension.LuaFiles = {
+    "vfs.vfs",
+}
+
+function LuaExtension.Init()
+    
+end
+
+return LuaExtension;

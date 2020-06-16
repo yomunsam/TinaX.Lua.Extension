@@ -1,0 +1,5 @@
+XCore = XCore or {}
+XCore.VFS = {}
+
+
+return XCore.VFS;
