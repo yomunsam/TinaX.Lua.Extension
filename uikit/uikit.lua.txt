@@ -41,37 +41,37 @@ function XCore.UIKit.OpenUI(ui_param, ...)
         end
         ui_name = ui_param.name;
         -- useMask
-        if ui_name.useMask == nil or type(ui_param.useMask) ~= "boolean" then
+        if ui_param.useMask == nil or type(ui_param.useMask) ~= "boolean" then
             open_ui_param.UseMask = OpenUIParams.useMask;
         else
             open_ui_param.UseMask = ui_param.useMask;
         end
         -- closeByMask
-        if ui_name.closeByMask == nil or type(ui_param.closeByMask) ~= "boolean" then
+        if ui_param.closeByMask == nil or type(ui_param.closeByMask) ~= "boolean" then
             open_ui_param.CloseByMask = OpenUIParams.closeByMask;
         else
             open_ui_param.CloseByMask = ui_param.closeByMask;
         end
         -- maskColor
-        if ui_name.maskColor == nil then
+        if ui_param.maskColor == nil then
             open_ui_param.MaskColor = OpenUIParams.maskColor;
         else
             open_ui_param.MaskColor = ui_param.maskColor;
         end
         -- root
-        if ui_name.root == nil then
+        if ui_param.root == nil then
             open_ui_param.UIRoot = OpenUIParams.root;
         else
             open_ui_param.UIRoot = ui_param.root;
         end
         -- behaviour
-        if ui_name.behaviour == nil then
+        if ui_param.behaviour == nil then
             open_ui_param.xBehaviour = OpenUIParams.behaviour;
         else
             open_ui_param.xBehaviour = ui_param.behaviour;
         end
         --DI
-        if ui_name.DI == nil or type(ui_name.closeByMask) ~= "boolean" then
+        if ui_param.DI == nil or type(ui_name.closeByMask) ~= "boolean" then
             open_ui_param.DependencyInjection = OpenUIParams.DI;
         else
             open_ui_param.DependencyInjection = ui_param.DI;
