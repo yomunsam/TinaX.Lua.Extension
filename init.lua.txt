@@ -44,6 +44,24 @@ local function RequireAllFiles(list)
     end
 end
 
+local function RequireAllFilesAsync(list, onFinish)
+    local total = #list
+    local counter = 0;
+    for _, v in ipairs(list) do
+        requireAsync(v, function(result, err)
+            if(err ~= nil) then
+               error("[TinaX Lua Extension] require lua failed. " .. err.Message) 
+            end
+            counter = counter + 1;
+            if(counter >= total) then
+                if(onFinish ~= nil) then
+                    onFinish();
+                end
+            end
+		end)
+    end
+end
+
 ---Init "TinaX Lua Extension"
 -- @param s_extensionRootPath string
 -- @param t_params params
@@ -57,6 +75,22 @@ function LuaExtension.Init(s_extensionRootPath, t_params)
     local requireList = GetRequireFilePaths(t_params.EnablePackages);
     -- dump(requireList);
     RequireAllFiles(requireList);
+end
+
+---Init "TinaX Lua Extension"
+-- @param s_extensionRootPath : string
+-- @param t_params :table params
+-- @param f_onFinishCallback : function
+function LuaExtension.InitAsync(s_extensionRootPath, t_params, f_onFinishCallback)
+    if (s_extensionRootPath == nil or type(s_extensionRootPath) ~= "string") then
+        error("Connot initial \"TinaX Lua Extension\" : param \"s_extensionRootPath\" is invalid.");
+    end
+    XCore = XCore or {};
+    XCore.XExtension = XCore.XExtension or {}
+    XCore.XExtension.RootPath = s_extensionRootPath;
+    local requireList = GetRequireFilePaths(t_params.EnablePackages);
+    -- dump(requireList);
+    RequireAllFilesAsync(requireList, f_onFinishCallback);
 end
 
 return LuaExtension;
